@@ -3,7 +3,11 @@ package com.endava.internship.service;
 import com.endava.internship.domain.Privilege;
 import com.endava.internship.domain.User;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.AbstractMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -17,7 +21,7 @@ public class UserServiceImpl implements UserService {
     public List<String> getFirstNamesReverseSorted(List<User> users) {
         return users.stream()
                     .map(User::getFirstName)
-                    .sorted((a,b)->-(a.compareTo(b)))
+                    .sorted(Comparator.reverseOrder())
                     .collect(toList());
 
     }
@@ -34,14 +38,14 @@ public class UserServiceImpl implements UserService {
     public List<Privilege> getAllDistinctPrivileges(final List<User> users) {
         return users.stream()
                 .flatMap(user -> user.getPrivileges().stream())
+                .distinct()
                 .collect(toList());
     }
 
     @Override
     public Optional<User> getUpdateUserWithAgeHigherThan(final List<User> users, final int age) {
         return users.stream()
-                .filter(user -> user.getAge() > age)
-                .filter(user-> user.getPrivileges().stream().anyMatch(privilege -> privilege.equals(Privilege.UPDATE)))
+                .filter(user -> user.getAge() > age && user.getPrivileges().contains(Privilege.UPDATE) )
                 .findFirst();
     }
 
@@ -83,8 +87,7 @@ public class UserServiceImpl implements UserService {
     public String convertTo(final List<User> users, final String delimiter, final Function<User, String> mapFun) {
         return users.stream()
                 .map(mapFun)
-                .reduce((a,b) -> a + "," + b)
-                .orElse("Empty");
+                .collect(Collectors.joining(delimiter));
     }
 
     @Override
