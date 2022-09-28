@@ -20,9 +20,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<String> getFirstNamesReverseSorted(List<User> users) {
         return users.stream()
-                    .map(User::getFirstName)
-                    .sorted(Comparator.reverseOrder())
-                    .collect(toList());
+                .map(User::getFirstName)
+                .sorted(Comparator.reverseOrder())
+                .collect(toList());
 
     }
 
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public List<User> sortByAgeDescAndNameAsc(final List<User> users) {
         return users.stream()
                 .sorted(Comparator.comparing(User::getAge).reversed()
-                                    .thenComparing(User::getFirstName))
+                        .thenComparing(User::getFirstName))
                 .collect(toList());
     }
 
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getUpdateUserWithAgeHigherThan(final List<User> users, final int age) {
         return users.stream()
-                .filter(user -> user.getAge() > age && user.getPrivileges().contains(Privilege.UPDATE) )
+                .filter(user -> user.getAge() > age && user.getPrivileges().contains(Privilege.UPDATE))
                 .findFirst();
     }
 
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
                 .map(User::getLastName)
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
         return map.entrySet().stream()
-                .filter(a-> a.getValue() > 1)
+                .filter(a -> a.getValue() > 1)
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey);
 
@@ -77,9 +77,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> filterBy(final List<User> users, final Predicate<User>... predicates) {
-        //TODO look4it
         return users.stream()
-                .filter(Stream.of(predicates).reduce(x->true, Predicate::and))
+                .filter(Stream.of(predicates).reduce(x -> true, Predicate::and))
                 .collect(toList());
     }
 
@@ -101,6 +100,6 @@ public class UserServiceImpl implements UserService {
     public Map<String, Long> getNumberOfLastNames(final List<User> users) {
         return users.stream()
                 .map(User::getLastName)
-                .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     }
 }
